@@ -112,3 +112,50 @@ CREATE TABLE IF NOT EXISTS users (
 - Captura 11: Código del endpoint `POST /register`.
 - Captura 12: Postman con respuesta `201 Created` al registrar usuario.
 - Captura 13: Consulta SQL mostrando que en `password_hash` se guardó hash y no texto plano.
+
+## Paso 6 - Endpoint `POST /login` con JWT
+
+**Diseño aplicado**
+1. Recibir `email` y `password`.
+2. Validar campos obligatorios y formato de email.
+3. Buscar usuario por email.
+4. Comparar contraseña con `password_hash` usando `bcrypt.compare`.
+5. Validar que el usuario esté en estado `activo`.
+6. Generar token JWT.
+7. Responder `200 OK` sin exponer contraseña ni hash.
+
+**Implementación**
+- Se creó la ruta `POST /login` en `backend/src/server.ts`.
+- Se firma JWT con `JWT_SECRET` del entorno y expiración de 2 horas.
+- Se controlan respuestas:
+  - `400` datos inválidos.
+  - `401` credenciales inválidas.
+  - `403` usuario inactivo.
+  - `500` error interno o falta de `JWT_SECRET`.
+
+**Evidencia visual sugerida**
+- Captura 14: Código del endpoint `POST /login`.
+- Captura 15: Postman login exitoso (`200`) mostrando token.
+- Captura 16: Postman login fallido (`401`) con credenciales inválidas.
+
+## Paso 7 - Endpoint protegido `GET /me`
+
+**Diseño aplicado**
+1. Leer token JWT desde encabezado `Authorization: Bearer <token>`.
+2. Validar presencia y formato del token.
+3. Verificar token con `JWT_SECRET`.
+4. Extraer `sub` (id de usuario) del payload.
+5. Consultar usuario en base de datos.
+6. Responder perfil del usuario autenticado sin contraseña ni hash.
+
+**Implementación**
+- Se creó la ruta `GET /me` en `backend/src/server.ts`.
+- Respuestas implementadas:
+  - `401` si no hay token o si es inválido/expirado.
+  - `404` si el usuario no existe.
+  - `200` si todo es correcto.
+
+**Evidencia visual sugerida**
+- Captura 17: Código del endpoint `GET /me`.
+- Captura 18: Postman `GET /me` con token válido (`200`).
+- Captura 19: Postman `GET /me` sin token o token inválido (`401`).
