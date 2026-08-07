@@ -92,3 +92,23 @@ CREATE TABLE IF NOT EXISTS users (
 - Captura 9: Terminal mostrando `Server running on port 4000`.
 - Captura 10: Navegador o Postman mostrando respuesta JSON `{ status: 'ok', db: [...] }`.
 
+## Paso 5 - Endpoint `POST /register` con hash de contraseña
+
+**Diseño aplicado**
+1. Recibir `nombre`, `apellido`, `email` y `password`.
+2. Validar campos obligatorios y reglas mínimas (longitudes y formato de email).
+3. Verificar que el email no exista.
+4. Generar hash de contraseña con `bcrypt`.
+5. Insertar usuario usando `password_hash`.
+6. Dejar que MySQL aplique `rol='aprendiz'` y `estado='activo'` por `DEFAULT`.
+7. Responder `201 Created` sin exponer contraseña ni hash.
+
+**Implementación**
+- Se creó la ruta `POST /register` en `backend/src/server.ts`.
+- Se usa `bcrypt.hash(password, 10)`.
+- Se hace validación previa y control de duplicado por email.
+
+**Evidencia visual sugerida**
+- Captura 11: Código del endpoint `POST /register`.
+- Captura 12: Postman con respuesta `201 Created` al registrar usuario.
+- Captura 13: Consulta SQL mostrando que en `password_hash` se guardó hash y no texto plano.
