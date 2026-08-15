@@ -1,6 +1,7 @@
 // URL base de nuestra API.
 // El backend de Express está ejecutándose actualmente en el puerto 4000.
-const API_URL = "http://localhost:4000";
+// const API_URL = "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // ============================================================
 // REGISTRO DE USUARIOS
