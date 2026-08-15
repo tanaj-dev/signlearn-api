@@ -51,12 +51,28 @@ const app = express();
   Como son orígenes diferentes, el navegador necesita
   que el backend autorice explícitamente al frontend.
 */
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//   }),
+// );
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://signlearn-api.netlify.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origen no permitido por CORS"));
+    },
   }),
 );
-
 /*
   Permite que Express pueda recibir información
   enviada en formato JSON.
